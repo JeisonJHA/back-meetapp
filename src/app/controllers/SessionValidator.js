@@ -1,10 +1,10 @@
 import * as yup from 'yup';
 
-import User from '../models/User';
+import { User } from '../models';
 
 class SessionValidator {
   async validate(req, res) {
-    const userSchema = yup.object().oneOf([null]);
+    const userSchema = yup.object().notOneOf([null]);
     try {
       const { email, password } = req.body;
       const user = await User.findOne({ where: { email } });
@@ -15,7 +15,7 @@ class SessionValidator {
       }
       return true;
     } catch (e) {
-      return false;
+      return res.status(401).json({ error: e.errors });
     }
   }
 }
