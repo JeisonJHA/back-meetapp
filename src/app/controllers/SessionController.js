@@ -10,7 +10,7 @@ class SessionController {
     const { email } = req.body;
     const user = await User.findOne({ where: { email } });
     const { id, name } = user;
-    return res.json({
+    const response = {
       user: {
         id,
         name,
@@ -19,7 +19,8 @@ class SessionController {
       token: jwt.sign({ id }, authConfig.secret, {
         expiresIn: authConfig.expiresIn,
       }),
-    });
+    };
+    return res.json(response);
   }
 }
 

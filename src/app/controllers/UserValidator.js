@@ -18,7 +18,7 @@ class UserValidator {
       await paramSchema.validate(req.body, { abortEarly: false });
       const { email } = req.body;
       const userExists = await User.findOne({ where: { email } });
-      await userSchema.validate(userExists);
+      if (userExists) await userSchema.validate(userExists);
       return true;
     } catch (err) {
       res.status(401).json({ error: err.errors });
@@ -63,7 +63,7 @@ class UserValidator {
       if (email !== user.email) {
         await userSchema.validate(user);
       }
-      if (!(await user.checkPassword(oldPassword))) {
+      if (oldPassword && !(await user.checkPassword(oldPassword))) {
         res.status(401).json({ error: 'oldPassword inválido.' });
         return false;
       }

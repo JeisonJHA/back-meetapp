@@ -21,6 +21,6 @@ routes.use(auth);
 
 routes.put('/users', UserController.update);
 
-routes.put('/files', upload.single('file'), FileController.upload);
+routes.post('/files', upload.single('file'), FileController.store);
 
 export default routes;
