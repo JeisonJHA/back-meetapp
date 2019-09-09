@@ -21,7 +21,7 @@ class UserValidator {
       if (userExists) await userSchema.validate(userExists);
       return true;
     } catch (err) {
-      res.status(401).json({ error: err.errors });
+      res.status(400).json({ error: err.errors });
       return false;
     }
   }
@@ -64,12 +64,12 @@ class UserValidator {
         await userSchema.validate(user);
       }
       if (oldPassword && !(await user.checkPassword(oldPassword))) {
-        res.status(401).json({ error: 'oldPassword inválido.' });
+        res.status(400).json({ error: 'oldPassword inválido.' });
         return false;
       }
       return true;
     } catch (err) {
-      res.status(401).json({ error: err.errors });
+      res.status(400).json({ error: err.errors });
       return false;
     }
   }

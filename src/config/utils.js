@@ -1,4 +1,5 @@
 import { setLocale } from 'yup';
+import { isBefore, startOfHour, parseISO } from 'date-fns';
 
 setLocale({
   mixed: {
@@ -12,14 +13,14 @@ setLocale({
 function notAuthorizedErro(res) {
   return res.status(401).json({ error: 'Not authorized' });
 }
-async function validateSchema(req, schema) {
-  const isValid = await schema.isValid(req.body);
-  if (isValid) {
-    return true;
-  }
-  const err = new Error('Validations fails');
-  err.code = 401;
-  throw err;
+
+function sendError(res, errCod, message) {
+  res.status(errCod).json({ error: message });
+  return false;
 }
 
-export { notAuthorizedErro, validateSchema };
+function pastDate(date) {
+  return isBefore(startOfHour(parseISO(date)), new Date());
+}
+
+export { notAuthorizedErro, sendError, pastDate };

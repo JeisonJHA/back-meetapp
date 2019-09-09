@@ -1,6 +1,7 @@
 import * as yup from 'yup';
 
 import { User } from '../models';
+import { notAuthorizedErro } from '../../config/utils';
 
 class SessionValidator {
   async validate(req, res) {
@@ -10,12 +11,12 @@ class SessionValidator {
       const user = await User.findOne({ where: { email } });
       await userSchema.validate(user);
       if (!(await user.checkPassword(password))) {
-        res.status(401).json({ error: 'Login Invalid' });
+        notAuthorizedErro(res);
         return false;
       }
       return true;
     } catch (e) {
-      return res.status(401).json({ error: e.errors });
+      return res.status(400).json({ error: e.errors });
     }
   }
 }
