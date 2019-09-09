@@ -6,6 +6,7 @@ import {
   SessionController,
   FileController,
   MeetupController,
+  OrganizingController,
 } from './app/controllers';
 
 import multerConfig from './config/multer';
@@ -28,5 +29,7 @@ routes.get('/meetup', MeetupController.index);
 routes.post('/meetup', MeetupController.store);
 routes.put('/meetup/:id', MeetupController.update);
 routes.delete('/meetup/:id', MeetupController.delete);
+
+routes.get('/organizing', OrganizingController.index);
 
 export default routes;

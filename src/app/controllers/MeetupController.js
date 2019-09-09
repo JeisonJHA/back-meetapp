@@ -1,11 +1,21 @@
+import { Op } from 'sequelize';
+import { startOfDay, endOfDay } from 'date-fns';
+
 import MeetupValidator from './MeetupValidator';
 import { Meetup, User, File } from '../models';
 
 class MeetupController {
   async index(req, res) {
     const { page = 1 } = req.query;
+    const where = {};
+    if (req.body.data) {
+      const searchDay = req.body.data;
+      where.data = {
+        [Op.between]: [startOfDay(searchDay), endOfDay(searchDay)],
+      };
+    }
     const meetups = await Meetup.findAll({
-      where: { user_id: req.userId },
+      where,
       order: ['data'],
       attributes: ['id', 'titulo', 'descricao', 'localizacao', 'data'],
       limit: 20,
@@ -58,15 +68,9 @@ class MeetupController {
 
   async delete(req, res) {
     if (!(await MeetupValidator.validateDelete(req, res))) return false;
-    const user_id = req.userId;
-    const meetup = await Meetup.findOne({
-      where: {
-        id: req.params.id,
-        user_id,
-      },
-    });
-    meetup.destroy();
-    return res.json();
+    const meetup = await Meetup.findByPk(req.params.id);
+    await meetup.destroy();
+    return res.send();
   }
 }
 
